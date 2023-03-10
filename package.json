@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": "true",
   "scripts": {
+    "task1": "node task-1.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
