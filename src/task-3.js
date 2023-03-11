@@ -7,25 +7,15 @@ const dirPath = new URL("./../database/task-3", import.meta.url).pathname;
 
 console.log(c.yellow.bold("LOGIN: "));
 let rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-rl._writeToOutput = function _writeToOutput(stringToWrite) {
-  if (rl.stdoutMuted) rl.output.write("*");
-  else rl.output.write(stringToWrite);
-};
+rl.on("SIGINT", closeProgram); //doesn't work on process.on('SIGINT')  SIGINT is emitted on ctrl+c press
+
 let username = await rl.question(c.bgBlue.bold("login:") + " ");
 let password = await rl.question(c.bgBlue.bold("password:") + " ");
 if (!validateLogin(username, password)) {
-  rl.close();
-  console.clear();
-  console.log(c.red("Neteisingi prisijungimo duomenys"));
-  process.exit();
+  closeProgram(c.red("Neteisingi prisijungimo duomenys"));
 }
-chooseAction();
 
-process.on("exit", () => {
-  rl.close();
-  console.clear(); //to clear password from history. Does it really clears?
-  process.exit();
-});
+chooseAction();
 
 function validateLogin(username, password) {
   if (username.trim() !== "admin" || password.trim() !== "1234") {
@@ -33,18 +23,9 @@ function validateLogin(username, password) {
   }
   return true;
 }
-function validateChoice(action) {
-  action = action.trim().toLowerCase();
-  if (action === "r" || action === "read") return "r";
-  if (action === "w" || action === "write") return "w";
-  return "";
-}
 
-async function runAction(actionFunc, callback) {
-  await actionFunc();
-  await callback();
-}
 async function chooseAction() {
+  /// do not quit after action, just keep cycling  between prompt for action and action until ctrl+c
   let action = "";
   while (!validateChoice(action)) {
     console.log(`Exit: ${c.bgBlue("Ctrl + C")}`);
@@ -52,7 +33,14 @@ async function chooseAction() {
     console.log(`Write: ${c.bgBlue("W")}`);
     action = await rl.question(``);
   }
-  action === "w" ? runAction(writeDataToFile, chooseAction) : runAction(readFileData, chooseAction);
+  action === "w" ? await writeDataToFile() : await readFileData();
+  await chooseAction();
+}
+function validateChoice(action) {
+  action = action.trim().toLowerCase();
+  if (action === "r" || action === "read") return "r";
+  if (action === "w" || action === "write") return "w";
+  return "";
 }
 
 async function writeDataToFile() {
@@ -73,4 +61,12 @@ async function readFileData() {
   } catch (err) {
     console.log(c.red(err.message));
   }
+}
+function closeProgram(msg = "") {
+  // console.clear(); //to clear password and read history from logs. doesn't clear all console, only visible area
+  // https://stackoverflow.com/questions/8813142/clear-terminal-window-in-node-js-readline-shell
+  process.stdout.write("\u001b[H\u001b[2J\u001b[3J"); //clear terminal with the scrollback, ansi escape code sequence
+  rl.close();
+  console.log(msg);
+  process.exit(0);
 }

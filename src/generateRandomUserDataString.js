@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { rand, monthToStr } from "./helpers.js";
+import { rand, birthDayFormat } from "./helpers.js";
 
 export function generateRandomUserDataString() {
   const sex = rand(0, 1) ? "female" : "male";
@@ -7,8 +7,7 @@ export function generateRandomUserDataString() {
   const lastName = faker.name.lastName(sex);
   const email = faker.internet.email(firstName, lastName);
   const password = faker.internet.password(9, true);
-  const birthDate = faker.date.birthdate({ min: 13, max: 115, mode: "age" });
-  const birthday = monthToStr(birthDate.getMonth()) + " " + birthDate.getDate();
+  const birthDate = birthDayFormat(faker.date.birthdate({ min: 13, max: 115, mode: "age" }));
 
-  return `${firstName}, ${lastName}, ${password}, ${email}, ${birthday}\n`;
+  return `${firstName}, ${lastName}, ${password}, ${email}, ${birthDate}\n`;
 }

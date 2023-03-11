@@ -8,6 +8,7 @@
     "task1": "node ./src/task-1.js",
     "task2": "node ./src/task-2.js",
     "task3": "node ./src/task-3.js",
+    "bonus": "node ./src/task-bonus.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
