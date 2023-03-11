@@ -14,8 +14,8 @@ if (login.trim() !== "admin" || password.trim() !== "1234") {
   console.log(c.red("Neteisingi prisijungimo duomenys"));
   rl.close();
 } else {
-  await mkdir(dirPath, { recursive: true });
   try {
+    await mkdir(dirPath, { recursive: true });
     await appendFile(`${dirPath}/${fileName}`, newEntry()); ///kelias ne nuo sito failo, bet nuo project rooto??...
     console.log(c.green("Duomenys faile sėkmingai išsaugoti"));
   } catch (err) {
