@@ -1,0 +1,14 @@
+import c from "chalk";
+import { EOL } from "os";
+console.log(EOL);
+console.log(`to run TASK 1:`, c.bgYellow("npm run task1"), "or", c.bgYellow("node ./src/task-1.js"));
+console.log(c.dim("It will save random user data to ./database/task-1/people.txt file"));
+console.log(EOL);
+console.log(`to run TASK 2:`, c.bgYellow("npm run task2"), "or", c.bgYellow("node ./src/task-2.js"));
+console.log(c.dim("It will save random user data to ./database/task-2/people.txt file only after successful login"));
+console.log(EOL);
+console.log(`to run TASK 3:`, c.bgYellow("npm run task3"), "or", c.bgYellow("node ./src/task-3.js"));
+console.log(c.dim("After successful login you will be able to save random user data to ./database/task-3/people.txt file or read data from that file"));
+console.log(EOL);
+console.log(`to run TASK BONUS:`, c.bgYellow("npm run bonus"), "or", c.bgYellow("node ./src/task-bonus.js"));
+console.log(c.dim("You will be prompted to enter registration details. Your details will be validated and saved to ./database/task-bonus/registration.txt file"));

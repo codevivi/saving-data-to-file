@@ -6,7 +6,7 @@
 
 Node, npm learning second homework
 
-Npm package used: [faker](https://www.npmjs.com/package/@faker-js/faker)
+Writing and reading data to files, readline , imports, exports, npm packages install, validation, terminal application.
 
 <!-- ![alt app screenshot](./img/screenshot.png) -->
 
@@ -45,9 +45,37 @@ Npm package used: [faker](https://www.npmjs.com/package/@faker-js/faker)
     - Show red messages on error;
     - If registration successful show green message "Registration successful";
 
-<!-- ### 🏁 Getting started
+### 🏁 Getting started
 
 **Must have [Node.js](https://nodejs.org)** installed
 
 1. Clone the repo
-2. Go into project directory and Install NPM packages -->
+2. Go into project directory and Install NPM packages
+
+   ```sh
+   npm install
+   ```
+
+3. run index.js for help
+
+   ```sh
+    node .
+   ```
+
+4. use application:
+
+   ```sh
+   npm run task1
+   ```
+
+   ```sh
+   npm run task2
+   ```
+
+   ```sh
+   npm run task3
+   ```
+
+   ```sh
+   npm run bonus
+   ```

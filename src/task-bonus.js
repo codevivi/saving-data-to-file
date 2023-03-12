@@ -15,7 +15,7 @@ printIntro();
 /// Get registration inputs
 let details = await getUserDetails();
 
-/// Read  adn parse current file data
+/// Read  and parse current file data
 let currentData = JSON.parse(await readFileData());
 
 /// Append new data to array
@@ -25,7 +25,7 @@ currentData.push(details);
 await writeDataToFile(JSON.stringify(currentData));
 
 /// Log Success message
-closeProgram(c.green("Duomenys faile sėkmingai išsaugoti"));
+closeProgram(c.green("Registration successful"));
 
 async function getUserDetails() {
   let userDetails = {
