@@ -1,119 +1,86 @@
-import { generateRandomUserDataString as newEntry } from "./generateRandomUserDataString.js";
 import c from "chalk";
 import { writeFile, mkdir, readFile } from "node:fs/promises";
 import readline from "node:readline/promises";
+import { validate } from "./validations.js";
+
 const fileName = "registration.json";
 const dirPath = new URL("./../database/task-bonus", import.meta.url).pathname;
-
-let rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+/// close program by clearing console on ctrl+c
 rl.on("SIGINT", closeProgram); //doesn't work on process.on('SIGINT')  SIGINT is emitted on ctrl+c press
 
-async function mainFunc() {
-  console.log(c.dim("Exit: Ctrl + C"));
-  console.log(c.yellow.bold("Enter your details: "));
-  let details = await getUserDetails();
-  let currentData = JSON.parse(await readFileData());
-  console.log(typeof currentData, currentData);
-  currentData.push(details);
-  console.log(currentData);
-  await writeDataToFile(JSON.stringify(currentData));
-  closeProgram(c.green("Duomenys faile sėkmingai išsaugoti"));
-}
+/// Intro messages
+printIntro();
+
+/// Get registration inputs
+let details = await getUserDetails();
+
+/// Read  adn parse current file data
+let currentData = JSON.parse(await readFileData());
+
+/// Append new data to array
+currentData.push(details);
+
+/// Save new updated array to file as json
+await writeDataToFile(JSON.stringify(currentData));
+
+/// Log Success message
+closeProgram(c.green("Duomenys faile sėkmingai išsaugoti"));
 
 async function getUserDetails() {
   let userDetails = {
-    name: await getValidInput.name(),
-    lastName: await getValidInput.lastName(),
-    password: await getValidInput.password(),
-    email: await getValidInput.email(),
-    birthday: await getValidInput.birthday(),
+    name: await getValidInput("Your name: ", [validate.isMaxLength(50)]),
+    lastName: await getValidInput("Your last name ", [validate.isMaxLength(50)]),
+    password: await getValidInput("Your password: ", [validate.isMinLength(9), validate.isMaxLength(50)]),
+    email: await getValidInput("Your email address: ", [validate.isValidEmail]),
+    birthday: await getValidInput("Your birthday YYYY-MM-DD: ", [validate.isValidBirthdayFormat]),
   };
   return userDetails;
 }
 
-const getValidInput = {
-  name: async function () {
-    let name = "";
-    let errorMsg = "";
-    while (!name) {
-      if (errorMsg) console.log(c.red(errorMsg));
-      name = (await rl.question(c.bgBlue.bold("Your name:") + " ")).trim();
-      if (!name) {
-        errorMsg = "Name can't be empty";
-      }
+async function getValidInput(questionStr, validateArr = []) {
+  validateArr = [validate.isNotEmpty, ...validateArr]; //add default check for empty values
+  let input = "";
+  let errorMsg = "";
+  while (!input) {
+    if (errorMsg) console.log(c.red(errorMsg));
+    let rawInput = (await rl.question(c.bgBlue.bold(questionStr))).trim();
+    try {
+      validateArr.forEach((validateFunc) => {
+        input = "";
+        input = validateFunc(rawInput);
+      });
+    } catch (validationError) {
+      errorMsg = validationError.message;
     }
-    return name;
-  },
-  lastName: async function () {
-    let lastName = "";
-    let errorMsg = "";
-    while (!lastName) {
-      if (errorMsg) console.log(c.red(errorMsg));
-      lastName = (await rl.question(c.bgBlue.bold("Your last name:") + " ")).trim();
-      if (!lastName) {
-        errorMsg = "Last name can't be empty";
-      }
-    }
-    return lastName;
-  },
-  password: async function () {
-    let password = "";
-    let errorMsg = "";
-    while (!password) {
-      if (errorMsg) console.log(c.red(errorMsg));
-      password = (await rl.question(c.bgBlue.bold("Your password:") + " ")).trim();
-      if (!password) {
-        errorMsg = "Password can't be empty";
-      }
-    }
-    return password;
-  },
-  email: async function () {
-    let email = "";
-    let errorMsg = "";
-    while (!email) {
-      if (errorMsg) console.log(c.red(errorMsg));
-      email = (await rl.question(c.bgBlue.bold("Your email address:") + " ")).trim();
-      if (!email) {
-        errorMsg = "Email can't be empty";
-      }
-    }
-    return email;
-  },
-  birthday: async function () {
-    let birthday = "";
-    let errorMsg = "";
-    while (!birthday) {
-      if (errorMsg) console.log(c.red(errorMsg));
-      birthday = (await rl.question(c.bgBlue.bold("Your birthday:") + " ")).trim();
-      if (!birthday) {
-        errorMsg = "Birthday can't be empty";
-      }
-    }
-    return birthday;
-  },
-};
-mainFunc();
+  }
+  return input;
+}
 
 async function writeDataToFile(data) {
   try {
     await mkdir(dirPath, { recursive: true });
-    await writeFile(`${dirPath}/${fileName}`, data); ///kelias ne nuo sito failo, bet nuo project rooto??...
-    // console.log(c.green("Duomenys faile sėkmingai išsaugoti"));
+    await writeFile(`${dirPath}/${fileName}`, data);
   } catch (err) {
-    console.error(err);
+    console.error(c.red(err.message));
   }
 }
 
 async function readFileData() {
   try {
-    // await mkdir(dirPath, { recursive: true });
     return await readFile(`${dirPath}/${fileName}`);
   } catch (err) {
-    console.log("chould add empty");
     return "[]"; //if file empty or not created
   }
 }
+
+function printIntro() {
+  console.clear();
+  console.log(c.yellow.bold(`     REGISTRATION`));
+  console.log(c.dim("Exit: Ctrl + C"));
+  console.log(c.yellow.bold("Enter your details: "));
+}
+
 function closeProgram(msg = "") {
   // console.clear(); //to clear password and read history from logs. doesn't clear all console, only visible area
   // https://stackoverflow.com/questions/8813142/clear-terminal-window-in-node-js-readline-shell
