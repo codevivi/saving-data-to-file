@@ -44,6 +44,7 @@ Writing and reading data to files, readline , imports, exports, npm packages ins
     - Write a program to save provided data to json file named "registration.json".
     - Show red messages on error;
     - If registration successful show green message "Registration successful";
+    - _Task For myself: to practice more few extra validations (valid date, length)_
 
 ### 🏁 Getting started
 
