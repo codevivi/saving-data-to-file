@@ -8,7 +8,7 @@ Node, npm learning second homework
 
 Writing and reading data to files, readline , imports, exports, npm packages install, validation, terminal application.
 
-<!-- ![alt app screenshot](./img/screenshot.png) -->
+![alt app screenshot](./assets/bonus-registration-preview-screenshot.png)
 
 🎯 **Goals:**
 
@@ -60,6 +60,12 @@ Writing and reading data to files, readline , imports, exports, npm packages ins
 
    ```sh
     node .
+   ```
+
+   or
+
+   ```sh
+    npm start
    ```
 
 4. use application:

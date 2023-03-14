@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": "true",
   "scripts": {
+    "start": "node ./index.js",
     "task1": "node ./src/task-1.js",
     "task2": "node ./src/task-2.js",
     "task3": "node ./src/task-3.js",

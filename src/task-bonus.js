@@ -9,6 +9,8 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 /// close program by clearing console on ctrl+c
 rl.on("SIGINT", closeProgram); //doesn't work on process.on('SIGINT')  SIGINT is emitted on ctrl+c press
 
+let errorMsg = "";
+let submittedDetailsMsg = "";
 /// Intro messages
 printIntro();
 
@@ -29,11 +31,11 @@ closeProgram(c.green("Registration successful"));
 
 async function getUserDetails() {
   let userDetails = {
-    name: await getValidInput("Your name: ", [validate.isMaxLength(50)]),
-    lastName: await getValidInput("Your last name ", [validate.isMaxLength(50)]),
-    password: await getValidInput("Your password: ", [validate.isMinLength(9), validate.isMaxLength(50)]),
-    email: await getValidInput("Your email address: ", [validate.isValidEmail]),
-    birthday: await getValidInput("Your birthday YYYY-MM-DD: ", [validate.isValidBirthdayFormat]),
+    name: await getValidInput("Your name:", [validate.isMaxLength(50)]),
+    lastName: await getValidInput("Your last name:", [validate.isMaxLength(50)]),
+    password: await getValidInput("Your password:", [validate.isMinLength(9), validate.isMaxLength(50)]),
+    email: await getValidInput("Your email address:", [validate.isValidEmail]),
+    birthday: await getValidInput("Your birthday YYYY-MM-DD:", [validate.isValidBirthdayFormat]),
   };
   return userDetails;
 }
@@ -41,15 +43,18 @@ async function getUserDetails() {
 async function getValidInput(questionStr, validateArr = []) {
   validateArr = [validate.isNotEmpty, ...validateArr]; //add default check for empty values
   let input = "";
-  let errorMsg = "";
   while (!input) {
-    if (errorMsg) console.log(c.red(errorMsg));
-    let rawInput = (await rl.question(c.bgBlue.bold(questionStr))).trim();
+    console.clear();
+    printIntro(submittedDetailsMsg);
     try {
+      console.log(c.red(errorMsg));
+      let rawInput = (await rl.question(c.bgBlue.bold(questionStr) + " ")).trim();
       validateArr.forEach((validateFunc) => {
         input = "";
         input = validateFunc(rawInput);
+        errorMsg = "";
       });
+      submittedDetailsMsg += c.bgBlue(questionStr) + " " + c.green(input) + "\n";
     } catch (validationError) {
       errorMsg = validationError.message;
     }
@@ -74,17 +79,16 @@ async function readFileData() {
   }
 }
 
-function printIntro() {
+function printIntro(msgMore = "") {
   console.clear();
   console.log(c.yellow.bold(`     REGISTRATION`));
   console.log(c.dim("Exit: Ctrl + C"));
-  console.log(c.yellow.bold("Enter your details: "));
+  console.log(c.yellow.bold("Your details: "));
+  console.log(msgMore);
 }
 
 function closeProgram(msg = "") {
-  // console.clear(); //to clear password and read history from logs. doesn't clear all console, only visible area
-  // https://stackoverflow.com/questions/8813142/clear-terminal-window-in-node-js-readline-shell
-  process.stdout.write("\u001b[H\u001b[2J\u001b[3J"); //clear terminal with the scrollback, ansi escape code sequence
+  process.stdout.write("\u001b[H\u001b[2J\u001b[3J"); //clear terminal including scroll back, ansi escape code sequence
   rl.close();
   console.log(msg);
   process.exit(0);
