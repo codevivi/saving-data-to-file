@@ -17,7 +17,7 @@ if (login.trim() !== "admin" || password.trim() !== "1234") {
 } else {
   try {
     await mkdir(dirPath, { recursive: true });
-    await appendFile(`${dirPath}/${fileName}`, newEntry()); ///kelias ne nuo sito failo, bet nuo project rooto??...
+    await appendFile(`${dirPath}/${fileName}`, newEntry());
     closeProgram(c.green("Duomenys faile sėkmingai išsaugoti"));
   } catch (err) {
     closeProgram(c.red(err.message));
@@ -25,7 +25,7 @@ if (login.trim() !== "admin" || password.trim() !== "1234") {
 }
 
 function closeProgram(msg = "") {
-  console.clear(); //to clear password from history. Does it really clears?
+  console.clear();
   console.log(msg);
   rl.close();
   process.exit(0);

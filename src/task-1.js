@@ -5,7 +5,7 @@ const fileName = "people.txt";
 const dirPath = new URL("./../database/task-1", import.meta.url).pathname;
 try {
   await mkdir(dirPath, { recursive: true });
-  await appendFile(`${dirPath}/${fileName}`, newEntry()); ///kelias ne nuo sito failo, bet nuo project rooto??...
+  await appendFile(`${dirPath}/${fileName}`, newEntry());
 } catch (err) {
   console.error(err);
 }
